@@ -6,9 +6,31 @@
 
 ## Installation
 
+### From source
 ```bash
-# Installed into go/bin as `asd`, this enables the command to be ran from anywhere.
-$ go build -o ~/go/bin/asd
+# Clone the repository
+$ git clone https://github.com/taubyte/office-space.git
+
+# Change directory into the repository
+$ cd office-space
+
+# Install the dependencies
+$ go mod tidy
+
+# Build the binary into your GOPATH as `asd`, this enables the command to be ran from anywhere.
+$ go build -o $GOPATH/bin/asd
+```
+
+### From go install
+```bash
+# Run the go install command
+$ go install github.com/taubyte/office-space@latest
+
+# Rename the binary to `asd`
+$ mv $GOPATH/bin/office-space $GOPATH/bin/asd
+
+# Verify the binary is installed
+$ which asd
 ```
 
 ## Usage
