@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -37,11 +36,19 @@ func issueSubCloneCommand() *cli.Command {
 
 // Setting as a variable so that it can be overridden with a mkdir for tests
 var CloneRepositoryOnBranch = func(ctx *runtime.Context, dir, branch, gitPrefix string) error {
-	cloneUrl := path.Join(gitPrefix, filepath.Base(dir)+".git")
-
-	err := ctx.ExecuteInDir(Workspace().Dir(), "git", "clone", cloneUrl, "-b", branch)
+	parser, err := GitConfig().Open(path.Join(dir, ".git/config"))
 	if err != nil {
-		return fmt.Errorf("git clone %s on branch %s failed with: %s", cloneUrl, branch, err)
+		return err
+	}
+
+	url, err := parser.Remote()
+	if err != nil {
+		return err
+	}
+
+	err = ctx.ExecuteInDir(Workspace().Dir(), "git", "clone", url.String(), "-b", branch)
+	if err != nil {
+		return fmt.Errorf("git clone %s on branch %s failed with: %s", url.String(), branch, err)
 	}
 
 	return nil

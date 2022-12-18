@@ -20,7 +20,8 @@ func TestIssueClone(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer ctx.Close()
+
+	defer ctx.Close() //comment this line out to see generated file structure
 
 	err = ctx.FakeWorkspace("repo1", "repo2", "repo3", "repo4")
 	if err != nil {

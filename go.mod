@@ -12,6 +12,7 @@ require (
 require (
 	atomicgo.dev/cursor v0.1.1 // indirect
 	atomicgo.dev/keyboard v0.2.8 // indirect
+	github.com/bigkevmcd/go-configparser v0.0.0-20221013105652-718c0b41a604
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/gookit/color v1.5.0 // indirect
