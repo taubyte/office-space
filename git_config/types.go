@@ -1,30 +1,17 @@
 package git_config
 
 import (
+	"github.com/bigkevmcd/go-configparser"
 	"github.com/taubyte/office-space/common"
 )
 
 var _ common.GitConfig = &gitConfig{}
 
-type gitConfig struct{
-	path string
-	repositoryformatversion int
-	filemode 				bool
-	bare 					bool
-	logallrefupdates 		bool
-	ignorecase				bool
-	precomposeunicode		bool
-	remotes					[]GithubRemote
-	branches				[]GithubBranch
+type gitConfig struct {
 }
 
-type GithubRemote struct {
-	url string
-	fetch string
-}
+var _ common.GitConfigParser = &gitConfigParser{}
 
-type GithubBranch struct {
-	remote string
-	merge string
+type gitConfigParser struct {
+	parser *configparser.ConfigParser
 }
-

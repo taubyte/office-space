@@ -1,9 +1,11 @@
 package common
 
-import (
-	"github.com/bigkevmcd/go-configparser"
-)
+import "net/url"
 
 type GitConfig interface {
-	Open(string) (*configparser.ConfigParser, error)
+	Open(string) (GitConfigParser, error)
+}
+
+type GitConfigParser interface {
+	Remote() (*url.URL, error)
 }
