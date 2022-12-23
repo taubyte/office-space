@@ -75,8 +75,14 @@ func TestIssueClone(t *testing.T) {
 
 		return nil
 	}
+	
+	// parser, err := GitConfig().Open("../.git/config")
+	// if err != nil {
+	// 	return err
+	// }
 
-	issue.CloneRepositoryOnBranch = func(runtime_ctx *runtime.Context, dir, branch string, gitPrefix string) error {
+	issue.CloneRepositoryOnBranch = func(runtime_ctx *runtime.Context, dir string, branch string) error {
+		
 		name := filepath.Base(dir)
 
 		path, err := ctx.FakeModuleWithBranches(name, branch)
