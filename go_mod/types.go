@@ -12,6 +12,6 @@ type goMod struct{}
 var _ common.GoModFile = &goModFile{}
 
 type goModFile struct {
-	dir string
-	mod *modfile.File
+	path string
+	mod  *modfile.File
 }
