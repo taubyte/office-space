@@ -2,6 +2,7 @@ package go_mod
 
 import (
 	"fmt"
+	"path"
 
 	"github.com/taubyte/office-space/common"
 	. "github.com/taubyte/office-space/singletons"
@@ -10,7 +11,7 @@ import (
 
 func (w *goMod) Open(dir string) (common.GoModFile, error) {
 	f := &goModFile{
-		dir: dir,
+		path: path.Join(dir, GoModName),
 	}
 
 	err := f.Initialize()
@@ -29,5 +30,5 @@ func (w *goModFile) DropReplace(packageName string, packageVersion string) error
 		return fmt.Errorf("dropping replace failed with: %s", err)
 	}
 
-	return Runtime().WriteFile(w.dir, modfile.Format(w.File().Syntax), 0777)
+	return Runtime().WriteFile(w.path, modfile.Format(w.File().Syntax), 0777)
 }

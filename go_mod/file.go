@@ -3,20 +3,19 @@ package go_mod
 import (
 	"fmt"
 	"os"
-	"path"
 
 	"golang.org/x/mod/modfile"
 )
 
 func (f *goModFile) Initialize() error {
-	data, err := os.ReadFile(path.Join(f.dir, GoModName))
+	data, err := os.ReadFile(f.path)
 	if err != nil {
-		return fmt.Errorf("Reading `%s` failed with: %s", f.dir, err)
+		return fmt.Errorf("Reading `%s` failed with: %s", f.path, err)
 	}
 
 	f.mod, err = modfile.Parse(GoModName, data, nil)
 	if err != nil {
-		return fmt.Errorf("Parsing `%s` failed with: %s", f.dir, err)
+		return fmt.Errorf("Parsing `%s` failed with: %s", f.path, err)
 	}
 
 	return nil
