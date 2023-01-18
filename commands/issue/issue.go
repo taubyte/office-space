@@ -23,17 +23,10 @@ func issueBasicCommand() *cli.Command {
 }
 
 func issue(ctx *runtime.Context) error {
-	parser, err := GitConfig().Open("../../.git/config")
+	branchPrefix, err := getBranchPrefix(ctx)
 	if err != nil {
 		return err
 	}
-
-	branchPrefixUrl, err := parser.Remote()
-	if err != nil {
-		return err
-	}
-
-	branchPrefix := branchPrefixUrl.String()
 
 	Display().SetVerbose(false)
 
