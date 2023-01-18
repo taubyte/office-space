@@ -1,16 +1,27 @@
 package issue
 
-import (
-	"fmt"
+/*
+Retrieves the remote url from the git repo config
+*/
+// func getConfigRepoUrl() (string, error) {
+// 	gitrepoconfiglocation := "../.git/config"
 
-	"github.com/taubyte/office-space/runtime"
-)
+// 	data, err := ioutil.ReadFile(gitrepoconfiglocation)
+// 	if err != nil {
+// 		return "", err
+// 	}
 
-func getBranchPrefix(ctx *runtime.Context) (branchPrefix string, err error) {
-	branchPrefix = ctx.Args().First()
-	if len(branchPrefix) == 0 {
-		err = fmt.Errorf("Must provide a branch prefix, ex: `asd issue <prefix>`")
-	}
+// 	regexpression := `(^?url).*`
+// 	urlLineInFile, err := regexp.Compile(regexpression)
+// 	if err != nil {
+// 		return "", err
+// 	}
 
-	return
-}
+// 	urlmatch := urlLineInFile.FindStringSubmatch(string(data))
+// 	if urlmatch != nil {
+// 		url := strings.Split(urlmatch[0], "url =")[1]
+// 		return url, nil
+// 	} else {
+// 		return "", errors.New("No github URL found in the git config. Most likely not a repository.")
+// 	}
+// }

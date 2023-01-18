@@ -20,7 +20,8 @@ func TestIssueClone(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer ctx.Close()
+
+	defer ctx.Close() //comment this line out to see generated file structure
 
 	err = ctx.FakeWorkspace("repo1", "repo2", "repo3", "repo4")
 	if err != nil {
@@ -74,8 +75,14 @@ func TestIssueClone(t *testing.T) {
 
 		return nil
 	}
+	
+	// parser, err := GitConfig().Open("../.git/config")
+	// if err != nil {
+	// 	return err
+	// }
 
-	issue.CloneRepositoryOnBranch = func(runtime_ctx *runtime.Context, dir, branch string, gitPrefix string) error {
+	issue.CloneRepositoryOnBranch = func(runtime_ctx *runtime.Context, dir string, branch string) error {
+		
 		name := filepath.Base(dir)
 
 		path, err := ctx.FakeModuleWithBranches(name, branch)

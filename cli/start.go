@@ -40,6 +40,8 @@ func Initialize(ctx context.Context) (*App, error) {
 		return nil, err
 	}
 
+	// SingletonGitConfig = &git_config.GitConfig{}
+
 	err = runtime.Initialize()
 	if err != nil {
 		return nil, err

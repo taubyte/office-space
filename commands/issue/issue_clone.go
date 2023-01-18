@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -36,22 +35,41 @@ func issueSubCloneCommand() *cli.Command {
 }
 
 // Setting as a variable so that it can be overridden with a mkdir for tests
-var CloneRepositoryOnBranch = func(ctx *runtime.Context, dir, branch, gitPrefix string) error {
-	cloneUrl := path.Join(gitPrefix, filepath.Base(dir)+".git")
-
-	err := ctx.ExecuteInDir(Workspace().Dir(), "git", "clone", cloneUrl, "-b", branch)
+var CloneRepositoryOnBranch = func(ctx *runtime.Context, dir string, branch string) error {
+	parser, err := GitConfig().Open(dir + "/" + branch + "/.git/config")
+	url, err := parser.Remote()
 	if err != nil {
-		return fmt.Errorf("git clone %s on branch %s failed with: %s", cloneUrl, branch, err)
+		return err
+	}
+
+	fmt.Print(url.String())
+
+	err = ctx.ExecuteInDir(Workspace().Dir(), "git", "clone", url.String(), "-b", branch)
+	if err != nil {
+		return fmt.Errorf("git clone %s on branch %s failed with: %s", url.String(), branch, err)
 	}
 
 	return nil
 }
 
 func issueClone(ctx *runtime.Context) error {
-	branchPrefix, err := getBranchPrefix(ctx)
+	// branchPrefix, err := getBranchPrefix(ctx)
+	// if err != nil {
+	// 	return err
+	// }
+	//How do I grab the path here so I can create the parser?
+	//Is there a way to execute pwd in using the ctx?
+	parser, err := GitConfig().Open("/.git/config")
 	if err != nil {
 		return err
 	}
+
+	branchPrefixUrl, err := parser.Remote()
+	if err != nil {
+		return err
+	}
+
+	branchPrefix := branchPrefixUrl.String()
 
 	gitPrefix := env.Get().GitPrefix()
 	if len(gitPrefix) == 0 {
@@ -59,7 +77,7 @@ func issueClone(ctx *runtime.Context) error {
 	}
 
 	newWsDir := path.Join(Workspace().Dir(), branchPrefix)
-	if ctx.Dry() == false {
+	if !ctx.Dry() {
 		err = os.Mkdir(newWsDir, 0744)
 		if err == nil {
 			pterm.Success.Printf("Created dir %s\n", newWsDir)
@@ -87,6 +105,7 @@ func issueClone(ctx *runtime.Context) error {
 
 		// TODO checkout most recent branch with prefix
 		branches := strings.Split(out, "\n")
+
 		for _, branch := range branches {
 			_branchPrefix := branchPrefix
 			if strings.HasPrefix(branch, "origin/") {
@@ -139,7 +158,7 @@ func issueClone(ctx *runtime.Context) error {
 	// TODO checkout most recent branch with prefix
 	for dir, branch := range items {
 		go func(_dir, _branch string) {
-			errChan <- CloneRepositoryOnBranch(ctx, _dir, _branch, gitPrefix)
+			errChan <- CloneRepositoryOnBranch(ctx, _dir, _branch)
 			wg.Done()
 		}(dir, branch)
 	}
