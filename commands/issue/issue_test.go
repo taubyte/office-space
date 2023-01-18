@@ -8,28 +8,20 @@ import (
 	"github.com/taubyte/office-space/common"
 	"github.com/taubyte/office-space/internal/mocks"
 	. "github.com/taubyte/office-space/singletons"
+	"gotest.tools/v3/assert"
 )
 
 func TestIssueBasic(t *testing.T) {
 	ctx, err := mocks.CLI()
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 	defer ctx.Close()
 
 	err = ctx.FakeWorkspace("repo1", "repo2", "repo3", "repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	// Empty the workspace, as we'll be creating workspaces from the repos
 	err = Workspace().Write(common.VsWorkspace{})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	branch1 := "TP-1_some_1branch_stuff"
 	branch2 := "TP-2_some_2branch_stuff"
@@ -66,56 +58,29 @@ func TestIssueBasic(t *testing.T) {
 	}
 
 	err = ctx.Run("issue", "TP-4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = confirmPathsSelectedBranch(branch4, paths["repo4"])
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInWorkspace("repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.Run("issue", "TP-1")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = confirmPathsSelectedBranch(branch1, paths["repo1"], paths["repo2"], paths["repo3"], paths["repo4"])
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInWorkspace("repo1", "repo2", "repo3", "repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.Run("issue", "TP-3")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = confirmPathsSelectedBranch(branch3, paths["repo1"], paths["repo2"], paths["repo3"])
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInWorkspace("repo1", "repo2", "repo3")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 }

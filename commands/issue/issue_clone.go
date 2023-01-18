@@ -5,7 +5,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/pterm/pterm"
@@ -47,67 +46,38 @@ var CloneRepositoryOnBranch = func(ctx *runtime.Context, dir, branch, gitPrefix 
 	return nil
 }
 
-func issueClone(ctx *runtime.Context) error {
-	branchPrefix, err := getBranchPrefix(ctx)
+func initializeIssueClone(ctx *runtime.Context) (branchPrefix, gitPrefix, newWsDir string, err error) {
+	branchPrefix, err = getBranchPrefix(ctx)
 	if err != nil {
-		return err
+		return
 	}
 
-	gitPrefix := env.Get().GitPrefix()
+	gitPrefix = env.Get().GitPrefix()
 	if len(gitPrefix) == 0 {
-		return fmt.Errorf("environment variable %s not set", env.GitPrefixEnvKey)
+		err = fmt.Errorf("environment variable %s not set", env.GitPrefixEnvKey)
+		return
 	}
 
-	newWsDir := path.Join(Workspace().Dir(), branchPrefix)
+	newWsDir = path.Join(Workspace().Dir(), branchPrefix)
 	if ctx.Dry() == false {
 		err = os.Mkdir(newWsDir, 0744)
 		if err == nil {
 			pterm.Success.Printf("Created dir %s\n", newWsDir)
-		} else {
-			return err
 		}
 	}
 
+	return
+}
+
+func issueClone(ctx *runtime.Context) error {
+	branchPrefix, gitPrefix, newWsDir, err := initializeIssueClone(ctx)
+	if err != nil {
+		return err
+	}
+
 	// Get valid repo/branch combinations
-	var itemsLock sync.Mutex
-	items := make(map[string]string)
-	err = Workspace().ForEach(func(dir string) error {
-		err := ctx.ExecuteInDir(dir, "git", "fetch")
-		if err != nil {
-			pterm.Warning.Printfln("likely not a git repository: `%s` git fetch failed with: %s", dir, err)
+	items, err := getValidBranchesWithPrefix(ctx, branchPrefix)
 
-			return nil
-		}
-
-		// Get branches
-		out, errOut, err := ctx.ExecuteCaptureInDir(dir, "git", "for-each-ref", "--format=%(refname:short)")
-		if err != nil {
-			return fmt.Errorf("getting branch of `%s`, failed with: %s\nError Output:\n%s", dir, err, errOut)
-		}
-
-		// TODO checkout most recent branch with prefix
-		branches := strings.Split(out, "\n")
-		for _, branch := range branches {
-			_branchPrefix := branchPrefix
-			if strings.HasPrefix(branch, "origin/") {
-				_branchPrefix = "origin/" + _branchPrefix
-			}
-
-			if strings.HasPrefix(branch, _branchPrefix) {
-				relativeDir, err := Workspace().RelativeTo(dir)
-				if err != nil {
-					relativeDir = dir
-				}
-				itemsLock.Lock()
-				items[relativeDir] = branch
-				itemsLock.Unlock()
-
-				break
-			}
-		}
-
-		return nil
-	}).Root()
 	if err != nil {
 		return err
 	}
