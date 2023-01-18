@@ -1,5 +1,8 @@
 # Office-space
 
+[![GoDoc](https://godoc.org/github.com/taubyte/office-space?status.svg)](https://pkg.go.dev/github.com/taubyte/office-space)
+[![Go Report Card](https://goreportcard.com/badge/taubyte/office-space)](https://goreportcard.com/report/taubyte/office-space)
+
 ## Introduction
   This is a CLI for managing your VSCode workspace
 
