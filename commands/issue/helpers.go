@@ -38,6 +38,7 @@ func getValidBranchesWithPrefix(ctx *runtime.Context, branchPrefix string) (item
 		}
 
 		// TODO checkout most recent branch with prefix as an issue could have multiple branches on one repository
+		// TODO confirm branch is still active
 		branches := strings.Split(out, "\n")
 		for _, branch := range branches {
 			// Remove origin/ to prevent checking out detached commit
