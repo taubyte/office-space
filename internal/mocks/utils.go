@@ -47,7 +47,7 @@ func (m *mockCLI) FakeModuleWithBranches(name string, branches ...string) (path 
 		return
 	}
 
-	err = m.Runtime.ExecuteInDir(path, "git", "commit", "--allow-empty", "-m", `"empty"`)
+	err = m.Runtime.ExecuteInDir(path, "git", "-c", "user.name='taubyte'", "-c", "user.email='test@taubyte.com'", "commit", "--allow-empty", "-m", `"empty"`)
 	if err != nil {
 		return
 	}
