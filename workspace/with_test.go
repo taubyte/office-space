@@ -91,8 +91,6 @@ func TestWithAll(t *testing.T) {
 	if err == nil {
 		t.Error("expected an error, got nil")
 		return
-	} else {
-		err = nil
 	}
 }
 
@@ -166,7 +164,5 @@ func TestWithRelative(t *testing.T) {
 	if err == nil {
 		t.Error("expected an error, got nil")
 		return
-	} else {
-		err = nil
 	}
 }

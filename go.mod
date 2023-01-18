@@ -7,6 +7,7 @@ require (
 	github.com/pterm/pterm v0.12.45
 	github.com/urfave/cli/v2 v2.11.1
 	golang.org/x/mod v0.7.0
+	gotest.tools/v3 v3.4.0
 )
 
 require (
@@ -14,6 +15,7 @@ require (
 	atomicgo.dev/keyboard v0.2.8 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/gookit/color v1.5.0 // indirect
 	github.com/lithammer/fuzzysearch v1.1.5 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect

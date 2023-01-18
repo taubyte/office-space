@@ -2,7 +2,7 @@ package issue
 
 import (
 	"fmt"
-	"strings"
+	"path"
 
 	"github.com/pterm/pterm"
 	"github.com/taubyte/office-space/commands/work"
@@ -28,63 +28,38 @@ func issue(ctx *runtime.Context) error {
 		return err
 	}
 
-	Display().SetVerbose(false)
-
 	err = Workspace().Write(common.VsWorkspace{})
 	if err != nil {
 		return fmt.Errorf("cleaning workspace failed with: %s", err)
 	}
 
-	added := []string{}
-	err = Workspace().ForEach(func(dir string) error {
-		err := ctx.ExecuteInDir(dir, "git", "fetch")
-		if err != nil {
-			pterm.Warning.Printfln("likely not a git repository: `%s` git fetch failed with: %s", dir, err)
-
-			return nil
-		}
-
-		// Get branches
-		out, errOut, err := ctx.ExecuteCaptureInDir(dir, "git", "for-each-ref", "--format=%(refname:short)")
-		if err != nil {
-			return fmt.Errorf("getting branch of `%s`, failed with: %s\nError Output:\n%s", dir, err, errOut)
-		}
-
-		// TODO checkout most recent branch with prefix
-		branches := strings.Split(out, "\n")
-		for _, branch := range branches {
-			_branchPrefix := branchPrefix
-			if strings.HasPrefix(branch, "origin/") {
-				_branchPrefix = "origin/" + _branchPrefix
-			}
-
-			if strings.HasPrefix(branch, _branchPrefix) {
-				err = Workspace().AddUse(dir)
-				if err != nil {
-					return fmt.Errorf("adding `%s` to workspace failed with: %s", dir, err)
-				}
-
-				relativeDir, err := Workspace().RelativeTo(dir)
-				if err != nil {
-					relativeDir = dir
-				}
-
-				added = append(added, relativeDir)
-
-				err = ctx.ExecuteInDir(dir, "git", "checkout", branch)
-				if err != nil {
-					return fmt.Errorf("checking out branch: %s in dir: %s failed with: %s", branch, dir, err)
-				}
-
-				break
-			}
-		}
-
-		return nil
-	}).Root()
+	items, err := getValidBranchesWithPrefix(ctx, branchPrefix)
 	if err != nil {
 		return err
 	}
+
+	Display().SetVerbose(false)
+
+	// Checkout branches
+	added := make([]string, len(items))
+	var idx int
+	for relativeDir, branch := range items {
+		absoluteDir := path.Join(Workspace().Dir(), relativeDir)
+
+		err = Workspace().AddUse(absoluteDir)
+		if err != nil {
+			return fmt.Errorf("adding `%s` to workspace failed with: %s", absoluteDir, err)
+		}
+
+		err = ctx.ExecuteInDir(absoluteDir, "git", "checkout", branch)
+		if err != nil {
+			return fmt.Errorf("checking out branch: %s in dir: %s failed with: %s", branch, absoluteDir, err)
+		}
+
+		added[idx] = relativeDir
+		idx++
+	}
+
 	Display().SetVerbose(true)
 
 	// call $ asd work

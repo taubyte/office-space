@@ -12,34 +12,23 @@ import (
 	"github.com/taubyte/office-space/internal/mocks"
 	"github.com/taubyte/office-space/runtime"
 	. "github.com/taubyte/office-space/singletons"
+	"gotest.tools/v3/assert"
 )
 
 func TestIssueClone(t *testing.T) {
 	ctx, err := mocks.CLI()
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 	defer ctx.Close()
 
 	err = ctx.FakeWorkspace("repo1", "repo2", "repo3", "repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	// Empty the workspace, as we'll be creating workspaces from the repos
 	err = Workspace().Write(common.VsWorkspace{})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = GoWork().Init()
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	branch1 := "TP-1_some_1branch_stuff"
 	branch2 := "TP-2_some_2branch_stuff"
@@ -55,17 +44,13 @@ func TestIssueClone(t *testing.T) {
 	paths := map[string]string{}
 	for name, branches := range testData {
 		paths[name], err = ctx.FakeModuleWithBranches(name, branches...)
-		if err != nil {
-			return
-		}
+		assert.NilError(t, err)
 	}
 
 	confirmPathsSelectedBranch := func(branch string, paths ...string) error {
 		for _, path := range paths {
 			out, _, err := ctx.ExecuteCaptureInDir(path, "git", "branch")
-			if err != nil {
-				return fmt.Errorf("%s git branch failed with: %s", path, err)
-			}
+			assert.NilError(t, err)
 
 			if strings.Contains(out, "* "+branch) == false {
 				return fmt.Errorf("Expected branch %s to be checked out on path %s, but it was not got: %s", branch, path, out)
@@ -79,57 +64,35 @@ func TestIssueClone(t *testing.T) {
 		name := filepath.Base(dir)
 
 		path, err := ctx.FakeModuleWithBranches(name, branch)
-		if err != nil {
-			return err
-		}
+		assert.NilError(t, err)
 
 		err = ctx.ExecuteInDir(path, "git", "checkout", branch)
-		if err != nil {
-			return err
-		}
+		assert.NilError(t, err)
 
 		return nil
 	}
 
 	err = ctx.Run("issue-clone", "TP-4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	testDirPath := func(issue string, repo string) string {
 		return path.Join(mocks.TestDirectory, issue, repo)
 	}
 
 	err = confirmPathsSelectedBranch(branch4, testDirPath("TP-4", "repo4"))
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInWorkspace("repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInGoWork("repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	_, err = mocks.ResetTestDir()
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.Run("issue-clone", "TP-1")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = confirmPathsSelectedBranch(
 		branch1,
@@ -138,34 +101,19 @@ func TestIssueClone(t *testing.T) {
 		testDirPath("TP-1", "repo3"),
 		testDirPath("TP-1", "repo4"),
 	)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInWorkspace("repo1", "repo2", "repo3", "repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInGoWork("repo1", "repo2", "repo3", "repo4")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	_, err = mocks.ResetTestDir()
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.Run("issue-clone", "TP-3")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = confirmPathsSelectedBranch(
 		branch3,
@@ -173,20 +121,11 @@ func TestIssueClone(t *testing.T) {
 		testDirPath("TP-3", "repo2"),
 		testDirPath("TP-3", "repo3"),
 	)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInWorkspace("repo1", "repo2", "repo3")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	err = ctx.ConfirmInGoWork("repo1", "repo2", "repo3")
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 }

@@ -80,16 +80,7 @@ func update(filePath string) runtime.ActionFunc {
 		}
 
 		if ctx.Bool("no-git") == false {
-			// TODO checkout HEAD?
-			err = ctx.ExecuteInDir(absPath, "git", "checkout", "main")
-			if err != nil {
-				err = ctx.ExecuteInDir(absPath, "git", "checkout", "master")
-				if err != nil {
-					return err
-				}
-			}
-
-			err = ctx.ExecuteInDir(absPath, "git", "pull")
+			err = pullRepositoryMainBranch(ctx, absPath)
 			if err != nil {
 				return err
 			}
@@ -125,4 +116,23 @@ func update(filePath string) runtime.ActionFunc {
 
 		return Work(ctx, false)
 	}
+}
+
+// This will attempt to checkout the main branch and pull
+func pullRepositoryMainBranch(ctx *runtime.Context, absPath string) error {
+	// TODO checkout main branch or HEAD
+	err := ctx.ExecuteInDir(absPath, "git", "checkout", "main")
+	if err != nil {
+		err = ctx.ExecuteInDir(absPath, "git", "checkout", "master")
+		if err != nil {
+			return err
+		}
+	}
+
+	err = ctx.ExecuteInDir(absPath, "git", "pull")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
