@@ -1,7 +1,6 @@
 package air
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -23,24 +22,20 @@ func Command() *cli.Command {
 }
 
 func command(ctx *runtime.Context) (err error) {
-	var specificTest string
-	osArgs := ctx.Args().Slice()
-	if len(osArgs) > 0 {
-		if len(osArgs) > 1 {
-			return fmt.Errorf("Got args %v, only expected one, ex: `asd air <TestToRun>`", osArgs)
-		}
-		specificTest = osArgs[0]
-	}
-
 	config := &airConfig{}
 	err = toml.Unmarshal(EmptyAirToml, config)
 	if err != nil {
 		return
 	}
 
+	argsSlice := ctx.Args().Slice()
 	args := strings.Split(config.Build.Cmd, " ")
-	if len(specificTest) > 0 {
-		args = append(args, []string{"--run", specificTest}...)
+	if len(argsSlice) > 0 {
+		if strings.HasPrefix(argsSlice[0], "-") == true {
+			args = append(args, argsSlice...)
+		} else {
+			args = append(args, append([]string{"--run"}, argsSlice...)...)
+		}
 	}
 
 	config.Build.Cmd = strings.Join(args, " ")

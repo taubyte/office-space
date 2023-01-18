@@ -112,6 +112,12 @@ $ asd issue-clone TP-43
 
 
 ### Air
+
+Runs air and appends arguments to `go test`, see: [Air Config](commands/air/.air.toml)
+
+
+- [ ] Add support for `--ignore-dirs` to ignore changes in certain directories
+
 ```bash
 # Livereload a test using air, see: https://github.com/cosmtrek/air
 # Note: be sure you have air installed `which air` => ~/go/bin/air
@@ -121,7 +127,11 @@ $ asd air
 
 # Matcher Live reload equivalent to `go test -v --run <some-test>
 $ asd air <some-test>
+
+# Live reload of all tests below a given directory equivalent to `go test -v ./...`
+$ asd air ./...
 ```
+
 
 ### Update
 
