@@ -80,9 +80,13 @@ func update(filePath string) runtime.ActionFunc {
 		}
 
 		if ctx.Bool("no-git") == false {
-			err = ctx.ExecuteInDir(absPath, "git", "checkout", "master")
+			// TODO checkout HEAD?
+			err = ctx.ExecuteInDir(absPath, "git", "checkout", "main")
 			if err != nil {
-				return err
+				err = ctx.ExecuteInDir(absPath, "git", "checkout", "master")
+				if err != nil {
+					return err
+				}
 			}
 
 			err = ctx.ExecuteInDir(absPath, "git", "pull")
