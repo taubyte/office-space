@@ -37,7 +37,5 @@ func TestDelete(t *testing.T) {
 	if err == nil {
 		t.Error("Expected error")
 		return
-	} else {
-		err = nil
 	}
 }
