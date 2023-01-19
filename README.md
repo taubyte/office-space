@@ -1,10 +1,13 @@
 # Office-space
 
-[![GoDoc](https://godoc.org/github.com/taubyte/office-space?status.svg)](https://pkg.go.dev/github.com/taubyte/office-space)
+[![Release](https://img.shields.io/github/release/taubyte/office-space.svg)](https://github.com/taubyte/office-space/releases)
+[![License](https://img.shields.io/github/license/taubyte/office-space)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/taubyte/office-space)](https://goreportcard.com/report/taubyte/office-space)
+[![GoDoc](https://godoc.org/github.com/taubyte/office-space?status.svg)](https://pkg.go.dev/github.com/taubyte/office-space)
+[![Discord](https://img.shields.io/discord/973677117722202152?color=%235865f2&label=discord)](https://tau.link/discord)
 
 ## Introduction
-  This is a CLI for managing your VSCode workspace
+  This is a CLI for managing your VSCode and Go workspaces. It is designed to be used with a multi-repo workspace, and will allow you to perform operations on all repos in the workspace at once.
 
 
 ## Installation
@@ -180,5 +183,5 @@ Setting current workspace, although this will need to open a new shell.
 - `asd ws main` Sets workspace to main
 - `asd ws current` Sets workspace to current
 
-# Maintainers
+## Maintainers
  - Sam Stoltenberg @skelouse
