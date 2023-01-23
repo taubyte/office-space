@@ -54,6 +54,11 @@ func Command() *cli.Command {
 				Usage:       fmt.Sprintf("Removes replaces of a given package, removes from go.work, removes from %s, and updates versions throughout to latest", workspace.PreLoc()),
 				Subcommands: updateCommands(),
 			},
+			{
+				Name:   "sort",
+				Usage:  fmt.Sprintf("sorts `%s` alphabetically", workspace.PreLoc()),
+				Action: runtime.Wrap(sort),
+			},
 		},
 	}
 }
