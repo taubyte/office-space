@@ -105,6 +105,11 @@ $ asd work remove <directory>
 $ asd work update, u
 ```
 
+```bash
+# Sorts `./main.code-workspace` by name
+$ asd work sort
+```
+
 ### Issue
 ```bash
 # Looks for branches containing the provided prefix, checks out the branches, and adds the given repositories to go.work and the main workspace
