@@ -7,6 +7,7 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/pterm/pterm"
 	"github.com/taubyte/office-space/runtime"
 	. "github.com/taubyte/office-space/singletons"
 )
@@ -29,7 +30,7 @@ func add(ctx *runtime.Context) error {
 	// Add to go.work
 	err := GoWork().AddUse(dir)
 	if err != nil {
-		return fmt.Errorf("Adding relative `%s` to go.work failed with: %s", dir, err)
+		pterm.Warning.Printfln("Adding relative `%s` to go.work failed with: %s", dir, err)
 	}
 
 	// Add it to vs workspace
