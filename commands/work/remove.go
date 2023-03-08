@@ -7,6 +7,7 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/pterm/pterm"
 	"github.com/taubyte/office-space/runtime"
 	. "github.com/taubyte/office-space/singletons"
 )
@@ -29,7 +30,7 @@ func remove(ctx *runtime.Context) error {
 	// Remove from go.work
 	err := GoWork().RemoveUse(dir)
 	if err != nil {
-		return fmt.Errorf("Removing Relative dir `%s` from go.work failed with: %s", dir, err)
+		pterm.Warning.Printfln("Removing Relative dir `%s` from go.work failed with: %s", dir, err)
 	}
 
 	// Remove from vs workspace
