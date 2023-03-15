@@ -167,6 +167,7 @@ $ asd update node --dry
 - `OFFICE_WORKSPACE_NAME` Defaults "main"
 - `OFFICE_WORKSPACE_EXT`  Defaults ".code-workspace"
 - `OFFICE_GIT_PREFIX` Prefix used for cloning repositories with issue-clone, Ex "git@bitbucket.org/taubyte"
+- `OFFICE_NO_OPEN_CODE` Set to true to disable opening vscode
 
 ### Autocomplete:
 

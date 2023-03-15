@@ -10,6 +10,7 @@ import (
 	"github.com/taubyte/office-space/commands/root"
 	"github.com/taubyte/office-space/commands/run"
 	"github.com/taubyte/office-space/commands/work"
+	"github.com/taubyte/office-space/env"
 	"github.com/taubyte/office-space/workspace"
 	"github.com/urfave/cli/v2"
 )
@@ -26,6 +27,7 @@ func defineCLI() (*cli.App, error) {
 			Name:    "nocode",
 			Aliases: []string{"n"},
 			Usage:   fmt.Sprintf(`"This prevents running "code %s"`, workspace.PreLoc()),
+			EnvVars: []string{env.NoOpenCodeEnvKey},
 		},
 	}
 
